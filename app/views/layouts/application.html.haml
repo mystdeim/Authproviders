@@ -1,0 +1,52 @@
+!!! 5
+%html(lang="en")
+  %head
+    %meta(charset="utf-8")
+    %meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    %title= content_for?(:title) ? yield(:title) : "Authproviders"
+    = csrf_meta_tags
+    / Le HTML5 shim, for IE6-8 support of HTML elements
+    /[if lt IE 9]
+      = javascript_include_tag "http://html5shim.googlecode.com/svn/trunk/html5.js"
+    = stylesheet_link_tag "application", :media => "all"
+    %link(href="images/favicon.ico" rel="shortcut icon")
+    %link(href="images/apple-touch-icon.png" rel="apple-touch-icon")
+    %link(href="images/apple-touch-icon-72x72.png" rel="apple-touch-icon" sizes="72x72")
+    %link(href="images/apple-touch-icon-114x114.png" rel="apple-touch-icon" sizes="114x114")
+
+  %body
+    .navbar.navbar-fixed-top
+      .navbar-inner
+        .container
+          %a.btn.btn-navbar(data-target=".nav-collapse" data-toggle="collapse")
+            %span.icon-bar
+            %span.icon-bar
+            %span.icon-bar
+          %a.brand(href="#") Authproviders
+          .container.nav-collapse
+            %ul.nav
+              - if user_signed_in?
+                %li= link_to "#{current_user.username} (#{current_user.provider})", current_user.url
+                %li= link_to "Sign out", destroy_user_session_path, :method => :delete
+
+    .container
+
+      .content
+        .row
+          .span9
+            = yield
+          .span3
+            .well.sidebar-nav
+              %h3 Providers
+              %ul.nav.nav-list
+                - if !user_signed_in?
+                  %li= link_to "Sign in with Facebook", user_omniauth_authorize_path(:facebook)
+                  %li= link_to "Sign in with Vkontakte", user_omniauth_authorize_path(:vkontakte)
+    
+      %footer
+        %p &copy; Company 2012
+    /
+      Javascripts
+      \==================================================
+    / Placed at the end of the document so the pages load faster
+    = javascript_include_tag "application"
